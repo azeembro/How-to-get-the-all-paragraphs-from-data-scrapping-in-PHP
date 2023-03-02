@@ -1,35 +1,22 @@
 <?php
-// Initialize curl
-$ch = curl_init();
- 
-// URL for Scraping
-curl_setopt($ch, CURLOPT_URL, 'https://noviclicks.com/');
- 
-// Return Transfer True
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
- 
-$output = curl_exec($ch);
- 
-// Closing cURL
-curl_close($ch);
- 
-// For web page display
-echo '<head>';
-echo '<meta http-equiv="content-type"
-    content="text/html; charset=utf-8" />';
-echo '</head>';
-echo '<body>';
- 
-echo '<h1>Web Scraping using cURL</h1>';
-// Checking for images
-preg_match_all('/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*\.(?:jpeg|gif|png)/i', $output, $matches);
+# wikipedia.php
 
-foreach ($matches[0] as $list) { ?>
- <ul>
-    <li><?php echo $list;?></li>
- </ul>   
-<?php }
- 
-echo '</body>';
- 
-?>
+$html = file_get_contents('https://noviclicks.com');
+
+$start = stripos($html, '<html>');
+
+$end = stripos($html, '</html>', $offset = $start);
+
+$length = $end - $start;
+
+$htmlSection = substr($html, $start, $length);
+
+//$found = preg_match_all('@<p>(.+)</p>@', $htmlSection, $matches);
+$found = preg_match_all( "#<h(\d)[^>]*?>(.*?)<[^>]*?/h\d>#i",$htmlSection, $matches, PREG_PATTERN_ORDER);
+$h_tags = "";   
+    for($i=0; $i <= count($matches[0]); $i++){
+          if (isset($matches[0][$i])){ 
+            $h_tags .= $matches[0][$i];
+          }
+        }
+        echo $h_tags;
